@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
+#include "Runtime/Online/HTTP/Public/Http.h"
 #include "PatchingDemoGameInstance.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FPatchCompleteDelegate, bool, Succeeded);
@@ -36,6 +37,8 @@ public:
     UFUNCTION(BlueprintCallable, Category = "Patching")
     bool PatchGame();
 
+    void OnPatchVersionResponse(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSucessful);
+
 protected:
     //Tracks if our local manifest file is up to date with the one hosted on our website
     bool bIsDownloadManifestUpToDate;
@@ -48,6 +51,10 @@ protected:
     // List of Chunk IDs to try and download
     UPROPERTY(EditDefaultsOnly, Category = "Patching")
     TArray<int32> ChunkDownloadList;
+
+    // URL variable to ContentBuildId.txt file
+    UPROPERTY(EditDefaultsOnly, Category = "Patching")
+    FString PatchVersionURL;
 
 protected:
     // Called when the chunk download process finishes
