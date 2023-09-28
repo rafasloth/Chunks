@@ -10,9 +10,27 @@
 void UPatchingDemoGameInstance::Init()
 {
     Super::Init();
-    const FString DeploymentName = "PatchingDemoLive";
-    const FString ContentBuildId = "PatchingDemoKey";
 
+    // create a new Http request and bind the response callback
+    TSharedRef<IHttpRequest, ESPMode::ThreadSafe> Request = FHttpModule::Get().CreateRequest();
+    Request->OnProcessRequestComplete().BindUObject(this, &UPatchingDemoGameInstance::OnPatchVersionResponse);
+
+    // configure and send the request
+    Request->SetURL(PatchVersionURL);
+    Request->SetVerb("GET");
+    Request->SetHeader(TEXT("User-Agent"), "X-UnrealEngine-Agent");
+    Request->SetHeader("Content-Type", TEXT("application-json"));
+    Request->ProcessRequest();
+
+    
+}
+
+void UPatchingDemoGameInstance::OnPatchVersionResponse(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSucessful) {
+    const FString DeploymentName = "PatchingDemoLive";
+
+    // content build ID. Our Http response will provide this info from txt file. From Blueprint editable variable.
+    FString ContentBuildId = Response->GetContentAsString();
+    UE_LOG(LogTemp, Display, TEXT("Patch Content ID Response: %s"), "ContentBuildId");
     // initialize the chunk downloader with chosen platform
     TSharedRef<FChunkDownloader> Downloader = FChunkDownloader::GetOrCreate();
     Downloader->Initialize("Windows", 8);
