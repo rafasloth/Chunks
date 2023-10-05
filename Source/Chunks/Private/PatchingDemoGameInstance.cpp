@@ -6,6 +6,7 @@
 #include "ChunkDownloader.h"
 #include "Misc/CoreDelegates.h"
 #include "AssetRegistry/AssetRegistryModule.h"
+#include "Kismet/GameplayStatics.h"
 
 void UPatchingDemoGameInstance::Init()
 {
@@ -26,21 +27,24 @@ void UPatchingDemoGameInstance::Init()
 }
 
 void UPatchingDemoGameInstance::OnPatchVersionResponse(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSucessful) {
-    const FString DeploymentName = "PatchingDemoLive";
+    if (bWasSucessful) { // Pretty important to fix "Assertion failed: IsValid()" when CDN is down!!!
+        const FString DeploymentName = "PatchingDemoLive";
 
-    // content build ID. Our Http response will provide this info from txt file. From Blueprint editable variable.
-    FString ContentBuildId = Response->GetContentAsString();
-    UE_LOG(LogTemp, Display, TEXT("Patch Content ID Response: %s"), "ContentBuildId");
-    // initialize the chunk downloader with chosen platform
-    TSharedRef<FChunkDownloader> Downloader = FChunkDownloader::GetOrCreate();
-    Downloader->Initialize("Windows", 8);
+        // content build ID. Our Http response will provide this info from txt file. From Blueprint editable variable.
+        FString ContentBuildId = Response->GetContentAsString(); // Throws assertion error popup if the CDN is down, because there wasn't a reponse!!!
+        UE_LOG(LogTemp, Display, TEXT("Patch Content ID Response: %s"), "ContentBuildId");
+        // initialize the chunk downloader with chosen platform
+        TSharedRef<FChunkDownloader> Downloader = FChunkDownloader::GetOrCreate();
+        Downloader->Initialize(
+            UGameplayStatics::GetPlatformName(), 8);
 
-    // load the cached build ID
-    Downloader->LoadCachedBuild(DeploymentName);
+        // load the cached build ID
+        Downloader->LoadCachedBuild(DeploymentName);
 
-    // update the build manifest file
-    TFunction<void(bool bSuccess)> UpdateCompleteCallback = [&](bool bSuccess) {bIsDownloadManifestUpToDate = bSuccess; };
-    Downloader->UpdateBuild(DeploymentName, ContentBuildId, UpdateCompleteCallback);
+        // update the build manifest file
+        TFunction<void(bool bSuccess)> UpdateCompleteCallback = [&](bool bSuccess) {bIsDownloadManifestUpToDate = bSuccess; };
+        Downloader->UpdateBuild(DeploymentName, ContentBuildId, UpdateCompleteCallback);
+    }
 }
 
 void UPatchingDemoGameInstance::Shutdown()
