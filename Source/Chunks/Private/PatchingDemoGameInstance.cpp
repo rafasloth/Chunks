@@ -6,6 +6,7 @@
 #include "ChunkDownloader.h"
 #include "Misc/CoreDelegates.h"
 #include "AssetRegistry/AssetRegistryModule.h"
+#include "Kismet/GameplayStatics.h"
 
 void UPatchingDemoGameInstance::Init()
 {
@@ -34,7 +35,8 @@ void UPatchingDemoGameInstance::OnPatchVersionResponse(FHttpRequestPtr Request, 
         UE_LOG(LogTemp, Display, TEXT("Patch Content ID Response: %s"), "ContentBuildId");
         // initialize the chunk downloader with chosen platform
         TSharedRef<FChunkDownloader> Downloader = FChunkDownloader::GetOrCreate();
-        Downloader->Initialize("Windows", 8);
+        Downloader->Initialize(
+            UGameplayStatics::GetPlatformName(), 8);
 
         // load the cached build ID
         Downloader->LoadCachedBuild(DeploymentName);
