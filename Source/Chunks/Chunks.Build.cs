@@ -10,7 +10,7 @@ public class Chunks : ModuleRules
 	
 		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore" });
 
-		PrivateDependencyModuleNames.AddRange(new string[] { "ChunkDownloader" });
+		PrivateDependencyModuleNames.AddRange(new string[] { "ChunkDownloader", "HTTP", "Json", "JsonUtilities" });
 
 		// Uncomment if you are using Slate UI
 		// PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });
