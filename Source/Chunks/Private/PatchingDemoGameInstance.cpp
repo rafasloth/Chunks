@@ -88,6 +88,17 @@ bool UPatchingDemoGameInstance::PatchGame()
         // get the chunk downloader
         TSharedRef<FChunkDownloader> Downloader = FChunkDownloader::GetChecked();
 
+        TArray<int32> OutChunkIds;
+
+        Downloader->GetAllChunkIds(OutChunkIds);
+        
+        // report manifest file's chunk status
+        for (int32 ChunkID : OutChunkIds)
+        {
+            int32 ChunkStatus = static_cast<int32>(Downloader->GetChunkStatus(ChunkID));
+            UE_LOG(LogTemp, Display, TEXT("Chunk %i status: %i"), ChunkID, ChunkStatus);
+        }
+
         // report current chunk status
         for (int32 ChunkID : ChunkDownloadList)
         {
@@ -97,6 +108,9 @@ bool UPatchingDemoGameInstance::PatchGame()
 
         TFunction<void(bool bSuccess)> DownloadCompleteCallback = [&](bool bSuccess) {OnDownloadComplete(bSuccess); };
         Downloader->DownloadChunks(ChunkDownloadList, DownloadCompleteCallback, 1);
+
+        // TODO: Replace with something like this:
+        // Downloader->DownloadChunk(ClickedButtonChunkID, DownloadCompleteCallback, 1);
 
         // start loading mode
         TFunction<void(bool bSuccess)> LoadingModeCompleteCallback = [&](bool bSuccess) {OnLoadingModeComplete(bSuccess); };
