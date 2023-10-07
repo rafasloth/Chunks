@@ -21,6 +21,7 @@ public:
     // Overrides
     virtual void Init() override;
     virtual void Shutdown() override;
+    const FString DeploymentName = "PatchingDemoCDN";
 
 public:
     UFUNCTION(BlueprintPure, Category = "Patching|Stats")

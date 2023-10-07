@@ -28,7 +28,6 @@ void UPatchingDemoGameInstance::Init()
 
 void UPatchingDemoGameInstance::OnPatchVersionResponse(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSucessful) {
     if (bWasSucessful) { // Pretty important to fix "Assertion failed: IsValid()" when CDN is down!!!
-        const FString DeploymentName = "PatchingDemoLive";
 
         // content build ID. Our Http response will provide this info from txt file. From Blueprint editable variable.
         FString ContentBuildId = Response->GetContentAsString(); // Throws assertion error popup if the CDN is down, because there wasn't a reponse!!!
@@ -103,6 +102,13 @@ bool UPatchingDemoGameInstance::PatchGame()
                 // CdnBaseUrls + / + Downloader->GetContentBuildId() + / + db.json
                 // Parse JSON to a c++ object
                 // Grab info for UI from that object
+
+            FString dbUrl = "http://127.0.0.1/" + DeploymentName + "/" + Downloader->GetContentBuildId() + "/db.json";
+            UE_LOG(LogTemp, Display, TEXT("DB URL is: %s"), *dbUrl);
+
+            // GETS a STRING from contents of db.json
+            // Serialize that string as JSON
+            // do stuff with the parsed JSON
 
         }
 
