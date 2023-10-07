@@ -32,7 +32,7 @@ void UPatchingDemoGameInstance::OnPatchVersionResponse(FHttpRequestPtr Request, 
 
         // content build ID. Our Http response will provide this info from txt file. From Blueprint editable variable.
         FString ContentBuildId = Response->GetContentAsString(); // Throws assertion error popup if the CDN is down, because there wasn't a reponse!!!
-        UE_LOG(LogTemp, Display, TEXT("Patch Content ID Response: %s"), "ContentBuildId");
+        UE_LOG(LogTemp, Display, TEXT("Patch Content ID Response: %s"), *ContentBuildId);
         // initialize the chunk downloader with chosen platform
         TSharedRef<FChunkDownloader> Downloader = FChunkDownloader::GetOrCreate();
         Downloader->Initialize(
@@ -169,6 +169,14 @@ void UPatchingDemoGameInstance::ProcessDbResponse(const FString& ResponseContent
     if (FJsonSerializer::Deserialize(JsonReader, OutArray)) {
         if (OutArray.Num() > 0) {
             UE_LOG(LogTemp, Display, TEXT("Found items in the DB"));
+            for(TSharedPtr<FJsonValue> val : OutArray) {
+                TSharedPtr<FJsonObject> obj = val->AsObject();
+                if (obj.IsValid()) {
+                    FString pakTitle;
+                    obj->TryGetStringField(TEXT("title"), pakTitle);
+                    UE_LOG(LogTemp, Display, TEXT("Title of the Pak: %s"), *pakTitle);
+                }
+            }
         }
     }
 }
