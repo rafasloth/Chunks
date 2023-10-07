@@ -97,6 +97,13 @@ bool UPatchingDemoGameInstance::PatchGame()
         {
             int32 ChunkStatus = static_cast<int32>(Downloader->GetChunkStatus(ChunkID));
             UE_LOG(LogTemp, Display, TEXT("Chunk %i status: %i"), ChunkID, ChunkStatus);
+
+            // Get the medatada and parse it for building the UI.
+            // Using the Deployment ID as key:
+                // CdnBaseUrls + / + Downloader->GetContentBuildId() + / + db.json
+                // Parse JSON to a c++ object
+                // Grab info for UI from that object
+
         }
 
         // report current chunk status

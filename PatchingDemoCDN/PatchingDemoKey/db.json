@@ -1,0 +1,22 @@
+{
+    "buildId": "PatchingDemoKey",
+    "dateUpdatedUTC": "10-07-2023 01:34:37",
+    "paks": [
+        {
+            "id": 1001,
+            "title": "Green cubeDefault",
+            "description": "This is a patch to make DLC_0/Materials/cubeDefault green",
+            "thumbnailUrl": "https://via.placeholder.com/300x300",
+            "type": "patch",
+            "version": "ver01"
+        },
+        {
+            "id": 9001,
+            "title": "Something",
+            "description": "This is a patch to do something",
+            "thumbnailUrl": "https://via.placeholder.com/300x300",
+            "type": "new",
+            "version": "ver01"
+        }
+    ]
+}
