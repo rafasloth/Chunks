@@ -39,6 +39,9 @@ public:
     bool PatchGame();
 
     void OnPatchVersionResponse(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSucessful);
+    void OnDbJsonResponse(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSucessful);
+
+    void ProcessDbResponse(const FString& ResponseContent);
 
 protected:
     //Tracks if our local manifest file is up to date with the one hosted on our website

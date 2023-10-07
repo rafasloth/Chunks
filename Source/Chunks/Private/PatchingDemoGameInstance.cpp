@@ -7,6 +7,7 @@
 #include "Misc/CoreDelegates.h"
 #include "AssetRegistry/AssetRegistryModule.h"
 #include "Kismet/GameplayStatics.h"
+#include "Json.h"
 
 void UPatchingDemoGameInstance::Init()
 {
@@ -107,6 +108,16 @@ bool UPatchingDemoGameInstance::PatchGame()
             UE_LOG(LogTemp, Display, TEXT("DB URL is: %s"), *dbUrl);
 
             // GETS a STRING from contents of db.json
+            // create a new Http request and bind the response callback
+            TSharedRef<IHttpRequest, ESPMode::ThreadSafe> Request = FHttpModule::Get().CreateRequest();
+            Request->OnProcessRequestComplete().BindUObject(this, &UPatchingDemoGameInstance::OnDbJsonResponse);
+
+            // configure and send the request
+            Request->SetURL(dbUrl);
+            Request->SetVerb("GET");
+            Request->SetHeader(TEXT("User-Agent"), "X-UnrealEngine-Agent");
+            Request->SetHeader("Content-Type", TEXT("application-json"));
+            Request->ProcessRequest();
             // Serialize that string as JSON
             // do stuff with the parsed JSON
 
@@ -135,6 +146,31 @@ bool UPatchingDemoGameInstance::PatchGame()
     UE_LOG(LogTemp, Display, TEXT("Manifest Update Failed. Can't patch the game"));
 
     return false;
+}
+
+void UPatchingDemoGameInstance::OnDbJsonResponse(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSucessful) {
+    if (bWasSucessful) { // Pretty important to fix "Assertion failed: IsValid()" when Web Server is down!!!
+        // content build ID. Our Http response will provide this info from txt file. From Blueprint editable variable.
+        FString Db = Response->GetContentAsString(); // Throws assertion error popup if the Web Server is down, because there wasn't a reponse!!!
+        UE_LOG(LogTemp, Display, TEXT("DB Content Response: %s"), "Db");
+
+        ProcessDbResponse(Db);
+    }
+}
+
+void UPatchingDemoGameInstance::ProcessDbResponse(const FString& ResponseContent)
+{
+    // Validate http called us back on the Game Thread...
+    check(IsInGameThread());
+
+    TSharedRef<TJsonReader<TCHAR>> JsonReader = TJsonReaderFactory<TCHAR>::Create(ResponseContent);
+    TArray<TSharedPtr<FJsonValue>> OutArray;
+
+    if (FJsonSerializer::Deserialize(JsonReader, OutArray)) {
+        if (OutArray.Num() > 0) {
+            UE_LOG(LogTemp, Display, TEXT("Found items in the DB"));
+        }
+    }
 }
 
 void UPatchingDemoGameInstance::OnLoadingModeComplete(bool bSuccess)
