@@ -17,7 +17,10 @@ bUseIoStore=False
 +CdnBaseUrls="http://127.0.0.1/PatchingDemoCDN"
 ```
 
+Development Packages:
 Packaged_Game_Directory\Chunks\Saved\Config\Windows\Game.ini
+
+Shipping Packages: C:\Users\USERNAME\AppData\Local\Chunks\Saved\Config\Windows
 
 ```ini
 [/Script/Plugins.ChunkDownloader]
