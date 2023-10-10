@@ -20,8 +20,8 @@ bUseIoStore=False
 Development Packages:
 Packaged_Game_Directory\Chunks\Saved\Config\Windows\Game.ini
 
-Shipping Packages: C:\Users\USERNAME\AppData\Local\Chunks\Saved\Config\Windows
-Note: Works in shipping but inconsistent it might get overwritten by the game, it only allows one CdnBaseUrls line it completely makes the original of the base game stop working. You can't mix and match basically, choose one the base game or the custom url.
+Shipping Packages: C:\Users\USERNAME\AppData\Local\Chunks\Saved\Config\Windows or This PC\Quest 2\Internal shared storage\Android\data\MyCompany.MyProject\files\UnrealGame\MyProject\MyProject\Saved\Config\Android
+Note: Works in shipping but inconsistent it might get overwritten by the game, it only allows one CdnBaseUrls line it completely makes the original of the base game stop working. You can't mix and match basically, choose one the base game or the custom url. 
 
 ```ini
 [/Script/Plugins.ChunkDownloader]
