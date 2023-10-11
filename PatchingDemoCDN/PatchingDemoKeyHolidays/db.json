@@ -1,0 +1,18 @@
+[
+    {
+        "id": 1001,
+        "title": "Purple cubeDefault",
+        "description": "This is a patch to make DLC_0/Materials/cubeDefault purple",
+        "thumbnailUrl": "https://via.placeholder.com/300x300/f0c.png",
+        "type": "patch",
+        "version": "ver02"
+    },
+    {
+        "id": 9001,
+        "title": "Something",
+        "description": "This is a patch to do something",
+        "thumbnailUrl": "https://via.placeholder.com/300x300/f00.png",
+        "type": "new",
+        "version": "ver01"
+    }
+]

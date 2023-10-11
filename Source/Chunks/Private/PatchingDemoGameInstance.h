@@ -21,6 +21,7 @@ public:
     // Overrides
     virtual void Init() override;
     virtual void Shutdown() override;
+    const FString DeploymentName = "PatchingDemoCDN"; // TODO: Look into making it configurable
 
 public:
     UFUNCTION(BlueprintPure, Category = "Patching|Stats")
@@ -38,6 +39,9 @@ public:
     bool PatchGame();
 
     void OnPatchVersionResponse(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSucessful);
+    void OnDbJsonResponse(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSucessful);
+
+    void ProcessDbResponse(const FString& ResponseContent);
 
 protected:
     //Tracks if our local manifest file is up to date with the one hosted on our website
@@ -52,8 +56,9 @@ protected:
     UPROPERTY(EditDefaultsOnly, Category = "Patching")
     TArray<int32> ChunkDownloadList;
 
+    // Base URL for the Deployment
+    FString BaseUrl;
     // URL variable to ContentBuildId.txt file
-    UPROPERTY(EditDefaultsOnly, Category = "Patching")
     FString PatchVersionURL;
 
 protected:
