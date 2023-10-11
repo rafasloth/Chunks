@@ -13,6 +13,16 @@ void UPatchingDemoGameInstance::Init()
 {
     Super::Init();
 
+    // Construct PatchVersionURL
+    TArray<FString> TempCdnBaseUrls;
+    GConfig->GetArray(TEXT("/Script/Plugins.ChunkDownloader"), TEXT("CdnBaseUrls"), TempCdnBaseUrls, GGameIni);
+
+    if (TempCdnBaseUrls.Num() > 0) {
+        FString BaseUrl = TempCdnBaseUrls[0];
+
+        PatchVersionURL = BaseUrl + "/ContentBuildId.txt";
+    }
+
     // create a new Http request and bind the response callback
     TSharedRef<IHttpRequest, ESPMode::ThreadSafe> Request = FHttpModule::Get().CreateRequest();
     Request->OnProcessRequestComplete().BindUObject(this, &UPatchingDemoGameInstance::OnPatchVersionResponse);

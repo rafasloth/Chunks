@@ -57,7 +57,6 @@ protected:
     TArray<int32> ChunkDownloadList;
 
     // URL variable to ContentBuildId.txt file
-    UPROPERTY(EditDefaultsOnly, Category = "Patching")
     FString PatchVersionURL;
 
 protected:
