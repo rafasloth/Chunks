@@ -21,7 +21,7 @@ public:
     // Overrides
     virtual void Init() override;
     virtual void Shutdown() override;
-    const FString DeploymentName = "PatchingDemoCDN";
+    const FString DeploymentName = "PatchingDemoCDN"; // TODO: Look into making it configurable
 
 public:
     UFUNCTION(BlueprintPure, Category = "Patching|Stats")
@@ -56,6 +56,8 @@ protected:
     UPROPERTY(EditDefaultsOnly, Category = "Patching")
     TArray<int32> ChunkDownloadList;
 
+    // Base URL for the Deployment
+    FString BaseUrl;
     // URL variable to ContentBuildId.txt file
     FString PatchVersionURL;
 

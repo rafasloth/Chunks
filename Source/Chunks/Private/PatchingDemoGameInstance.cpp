@@ -18,7 +18,7 @@ void UPatchingDemoGameInstance::Init()
     GConfig->GetArray(TEXT("/Script/Plugins.ChunkDownloader"), TEXT("CdnBaseUrls"), TempCdnBaseUrls, GGameIni);
 
     if (TempCdnBaseUrls.Num() > 0) {
-        FString BaseUrl = TempCdnBaseUrls[0];
+        BaseUrl = TempCdnBaseUrls[0];
 
         PatchVersionURL = BaseUrl + "/ContentBuildId.txt";
     }
@@ -114,7 +114,7 @@ bool UPatchingDemoGameInstance::PatchGame()
                 // Parse JSON to a c++ object
                 // Grab info for UI from that object
 
-            FString dbUrl = "http://127.0.0.1/" + DeploymentName + "/" + Downloader->GetContentBuildId() + "/db.json";
+            FString dbUrl = BaseUrl + "/" + Downloader->GetContentBuildId() + "/db.json";
             UE_LOG(LogTemp, Display, TEXT("DB URL is: %s"), *dbUrl);
 
             // GETS a STRING from contents of db.json
