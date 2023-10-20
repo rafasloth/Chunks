@@ -156,7 +156,6 @@ void UPatchingDemoGameInstance::OnDbJsonResponse(FHttpRequestPtr Request, FHttpR
     if (bWasSucessful) { // Pretty important to fix "Assertion failed: IsValid()" when Web Server is down!!!
         // content build ID. Our Http response will provide this info from txt file. From Blueprint editable variable.
         FString Db = Response->GetContentAsString(); // Throws assertion error popup if the Web Server is down, because there wasn't a reponse!!!
-        UE_LOG(LogTemp, Display, TEXT("DB Content Response: %s"), "Db");
 
         ProcessDbResponse(Db);
     }
