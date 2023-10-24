@@ -101,21 +101,15 @@ bool UPatchingDemoGameInstance::PatchGame()
         TArray<int32> OutChunkIds;
 
         Downloader->GetAllChunkIds(OutChunkIds);
+
+        FString dbUrl = BaseUrl + "/" + Downloader->GetContentBuildId() + "/db.json";
+        UE_LOG(LogTemp, Display, TEXT("DB URL is: %s"), *dbUrl);
         
         // report manifest file's chunk status
         for (int32 ChunkID : OutChunkIds)
         {
             int32 ChunkStatus = static_cast<int32>(Downloader->GetChunkStatus(ChunkID));
             UE_LOG(LogTemp, Display, TEXT("Chunk %i status: %i"), ChunkID, ChunkStatus);
-
-            // Get the medatada and parse it for building the UI.
-            // Using the Deployment ID as key:
-                // CdnBaseUrls + / + Downloader->GetContentBuildId() + / + db.json
-                // Parse JSON to a c++ object
-                // Grab info for UI from that object
-
-            FString dbUrl = BaseUrl + "/" + Downloader->GetContentBuildId() + "/db.json";
-            UE_LOG(LogTemp, Display, TEXT("DB URL is: %s"), *dbUrl);
 
             // GETS a STRING from contents of db.json
             // create a new Http request and bind the response callback
@@ -162,7 +156,6 @@ void UPatchingDemoGameInstance::OnDbJsonResponse(FHttpRequestPtr Request, FHttpR
     if (bWasSucessful) { // Pretty important to fix "Assertion failed: IsValid()" when Web Server is down!!!
         // content build ID. Our Http response will provide this info from txt file. From Blueprint editable variable.
         FString Db = Response->GetContentAsString(); // Throws assertion error popup if the Web Server is down, because there wasn't a reponse!!!
-        UE_LOG(LogTemp, Display, TEXT("DB Content Response: %s"), "Db");
 
         ProcessDbResponse(Db);
     }
@@ -182,6 +175,7 @@ void UPatchingDemoGameInstance::ProcessDbResponse(const FString& ResponseContent
             for(TSharedPtr<FJsonValue> val : OutArray) {
                 TSharedPtr<FJsonObject> obj = val->AsObject();
                 if (obj.IsValid()) {
+                    // TODO: Grab metadata for UI from the object
                     FString pakTitle;
                     obj->TryGetStringField(TEXT("title"), pakTitle);
                     UE_LOG(LogTemp, Display, TEXT("Title of the Pak: %s"), *pakTitle);
