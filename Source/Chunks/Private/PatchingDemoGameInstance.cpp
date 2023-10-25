@@ -167,10 +167,18 @@ void UPatchingDemoGameInstance::ProcessDbResponse(const FString& ResponseContent
             for(TSharedPtr<FJsonValue> val : OutArray) {
                 TSharedPtr<FJsonObject> obj = val->AsObject();
                 if (obj.IsValid()) {
-                    // TODO: Grab metadata for UI from the object
-                    FString pakTitle;
-                    obj->TryGetStringField(TEXT("title"), pakTitle);
-                    UE_LOG(LogTemp, Display, TEXT("Title of the Pak: %s"), *pakTitle);
+                    int32 chunkId;
+                    // Grab the int field 'id'.
+                    bool result = obj->TryGetNumberField(TEXT("id"), chunkId);
+                    // if false return
+                    if (result == false) { return; }
+                    // check if chunk id in db.json exists in manifest file
+                    if (ChunkDownloadList.Contains(chunkId)) {
+                        // TODO: Grab metadata for UI from the object
+                        FString pakTitle;
+                        obj->TryGetStringField(TEXT("title"), pakTitle);
+                        UE_LOG(LogTemp, Display, TEXT("Title of the Pak: %s"), *pakTitle);
+                    }
                 }
             }
         }
