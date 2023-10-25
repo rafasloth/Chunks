@@ -98,15 +98,13 @@ bool UPatchingDemoGameInstance::PatchGame()
         // get the chunk downloader
         TSharedRef<FChunkDownloader> Downloader = FChunkDownloader::GetChecked();
 
-        TArray<int32> OutChunkIds;
-
-        Downloader->GetAllChunkIds(OutChunkIds);
+        Downloader->GetAllChunkIds(ChunkDownloadList);
 
         FString dbUrl = BaseUrl + "/" + Downloader->GetContentBuildId() + "/db.json";
         UE_LOG(LogTemp, Display, TEXT("DB URL is: %s"), *dbUrl);
         
         // report manifest file's chunk status
-        for (int32 ChunkID : OutChunkIds)
+        for (int32 ChunkID : ChunkDownloadList)
         {
             int32 ChunkStatus = static_cast<int32>(Downloader->GetChunkStatus(ChunkID));
             UE_LOG(LogTemp, Display, TEXT("Chunk %i status: %i"), ChunkID, ChunkStatus);
@@ -127,12 +125,6 @@ bool UPatchingDemoGameInstance::PatchGame()
 
         }
 
-        // report current chunk status
-        for (int32 ChunkID : ChunkDownloadList)
-        {
-            int32 ChunkStatus = static_cast<int32>(Downloader->GetChunkStatus(ChunkID));
-            UE_LOG(LogTemp, Display, TEXT("Chunk %i status: %i"), ChunkID, ChunkStatus);
-        }
 
         TFunction<void(bool bSuccess)> DownloadCompleteCallback = [&](bool bSuccess) {OnDownloadComplete(bSuccess); };
         Downloader->DownloadChunks(ChunkDownloadList, DownloadCompleteCallback, 1);
@@ -175,10 +167,18 @@ void UPatchingDemoGameInstance::ProcessDbResponse(const FString& ResponseContent
             for(TSharedPtr<FJsonValue> val : OutArray) {
                 TSharedPtr<FJsonObject> obj = val->AsObject();
                 if (obj.IsValid()) {
-                    // TODO: Grab metadata for UI from the object
-                    FString pakTitle;
-                    obj->TryGetStringField(TEXT("title"), pakTitle);
-                    UE_LOG(LogTemp, Display, TEXT("Title of the Pak: %s"), *pakTitle);
+                    int32 chunkId;
+                    // Grab the int field 'id'.
+                    bool result = obj->TryGetNumberField(TEXT("id"), chunkId);
+                    // if false return
+                    if (result == false) { return; }
+                    // check if chunk id in db.json exists in manifest file
+                    if (ChunkDownloadList.Contains(chunkId)) {
+                        // TODO: Grab metadata for UI from the object
+                        FString pakTitle;
+                        obj->TryGetStringField(TEXT("title"), pakTitle);
+                        UE_LOG(LogTemp, Display, TEXT("Title of the Pak: %s"), *pakTitle);
+                    }
                 }
             }
         }
