@@ -53,7 +53,6 @@ protected:
 
 protected:
     // List of Chunk IDs to try and download
-    UPROPERTY(EditDefaultsOnly, Category = "Patching")
     TArray<int32> ChunkDownloadList;
 
     // Base URL for the Deployment
