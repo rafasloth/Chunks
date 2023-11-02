@@ -36,7 +36,7 @@ public:
 public:
     // Starts the game patching process. Returns false if the patching manifest is not up to date. */
     UFUNCTION(BlueprintCallable, Category = "Patching")
-    bool PatchGame();
+    bool PatchGame(int32 ChunkID);
 
     void OnPatchVersionResponse(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSucessful);
     void OnDbJsonResponse(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSucessful);
@@ -54,6 +54,7 @@ protected:
 protected:
     // List of Chunk IDs to try and download
     TArray<int32> ChunkDownloadList;
+    TArray<int32> ChunksInManifestList;
 
     // Base URL for the Deployment
     FString BaseUrl;

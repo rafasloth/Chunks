@@ -8,11 +8,13 @@
         "version": "ver01"
     },
     {
-        "id": 9001,
-        "title": "Something",
-        "description": "This is a patch to do something",
+        "id": 1002,
+        "title": "Init Level",
+        "description": "This is a patch to load a level",
         "thumbnailUrl": "https://via.placeholder.com/300x300/f00.png",
-        "type": "new",
+        "type": "level",
+        "levelName": "Init",
+        "dlc_mount_point": "/Game/DLC_1",
         "version": "ver01"
     }
 ]
