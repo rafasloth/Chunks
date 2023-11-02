@@ -8,12 +8,12 @@
         "version": "ver02"
     },
     {
-        "id": 9001,
-        "title": "Something Level",
+        "id": 1002,
+        "title": "Init Level",
         "description": "This is a patch to load a level",
         "thumbnailUrl": "https://via.placeholder.com/300x300/f00.png",
         "type": "level",
-        "levelName": "DemoLevel",
+        "levelName": "Init",
         "version": "ver01"
     }
 ]
