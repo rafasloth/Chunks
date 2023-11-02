@@ -90,7 +90,7 @@ void UPatchingDemoGameInstance::GetLoadingProgress(int32& BytesDownloaded, int32
     MountPercent = ((float)ChunksMounted / (float)TotalChunksToMount) * 100.0f;
 }
 
-bool UPatchingDemoGameInstance::PatchGame()
+bool UPatchingDemoGameInstance::PatchGame(int32 ChunkID)
 {
     // make sure the download manifest is up to date
     if (bIsDownloadManifestUpToDate)
@@ -98,43 +98,44 @@ bool UPatchingDemoGameInstance::PatchGame()
         // get the chunk downloader
         TSharedRef<FChunkDownloader> Downloader = FChunkDownloader::GetChecked();
 
-        Downloader->GetAllChunkIds(ChunkDownloadList);
+        Downloader->GetAllChunkIds(ChunksInManifestList);
 
         FString dbUrl = BaseUrl + "/" + Downloader->GetContentBuildId() + "/db.json";
         UE_LOG(LogTemp, Display, TEXT("DB URL is: %s"), *dbUrl);
         
         // report manifest file's chunk status
-        for (int32 ChunkID : ChunkDownloadList)
+        for (int32 ChunkID : ChunksInManifestList)
         {
             int32 ChunkStatus = static_cast<int32>(Downloader->GetChunkStatus(ChunkID));
             UE_LOG(LogTemp, Display, TEXT("Chunk %i status: %i"), ChunkID, ChunkStatus);
 
-            // GETS a STRING from contents of db.json
-            // create a new Http request and bind the response callback
-            TSharedRef<IHttpRequest, ESPMode::ThreadSafe> Request = FHttpModule::Get().CreateRequest();
-            Request->OnProcessRequestComplete().BindUObject(this, &UPatchingDemoGameInstance::OnDbJsonResponse);
-
-            // configure and send the request
-            Request->SetURL(dbUrl);
-            Request->SetVerb("GET");
-            Request->SetHeader(TEXT("User-Agent"), "X-UnrealEngine-Agent");
-            Request->SetHeader("Content-Type", TEXT("application-json"));
-            Request->ProcessRequest();
-            // Serialize that string as JSON
-            // do stuff with the parsed JSON
-
         }
 
+        // GETS a STRING from contents of db.json
+            // create a new Http request and bind the response callback
+        TSharedRef<IHttpRequest, ESPMode::ThreadSafe> Request = FHttpModule::Get().CreateRequest();
+        Request->OnProcessRequestComplete().BindUObject(this, &UPatchingDemoGameInstance::OnDbJsonResponse);
+
+        // configure and send the request
+        Request->SetURL(dbUrl);
+        Request->SetVerb("GET");
+        Request->SetHeader(TEXT("User-Agent"), "X-UnrealEngine-Agent");
+        Request->SetHeader("Content-Type", TEXT("application-json"));
+        Request->ProcessRequest();
+        // Serialize that string as JSON
+        // do stuff with the parsed JSON
 
         TFunction<void(bool bSuccess)> DownloadCompleteCallback = [&](bool bSuccess) {OnDownloadComplete(bSuccess); };
-        Downloader->DownloadChunks(ChunkDownloadList, DownloadCompleteCallback, 1);
 
-        // TODO: Replace with something like this:
-        // Downloader->DownloadChunk(ClickedButtonChunkID, DownloadCompleteCallback, 1);
+        if (ChunkID > 0) {
+            ChunkDownloadList.Add(ChunkID);
+            Downloader->DownloadChunks(ChunkDownloadList, DownloadCompleteCallback, 1);
+            
+            // start loading mode
+            TFunction<void(bool bSuccess)> LoadingModeCompleteCallback = [&](bool bSuccess) {OnLoadingModeComplete(bSuccess); };
+            Downloader->BeginLoadingMode(LoadingModeCompleteCallback);
+        }
 
-        // start loading mode
-        TFunction<void(bool bSuccess)> LoadingModeCompleteCallback = [&](bool bSuccess) {OnLoadingModeComplete(bSuccess); };
-        Downloader->BeginLoadingMode(LoadingModeCompleteCallback);
         return true;
     }
 
