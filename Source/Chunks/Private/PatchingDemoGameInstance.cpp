@@ -127,11 +127,13 @@ bool UPatchingDemoGameInstance::PatchGame(int32 ChunkID)
 
         TFunction<void(bool bSuccess)> DownloadCompleteCallback = [&](bool bSuccess) {OnDownloadComplete(bSuccess); };
 
+        ChunkDownloadList.Empty();
+
         if (ChunkID > 0) {
             ChunkDownloadList.Add(ChunkID);
             Downloader->DownloadChunks(ChunkDownloadList, DownloadCompleteCallback, 1);
             
-            // start loading mode
+            // start loading mode. This outside of the if might fix Assertion failed: !"Pak cannot be unmounted with outstanding requests" 
             TFunction<void(bool bSuccess)> LoadingModeCompleteCallback = [&](bool bSuccess) {OnLoadingModeComplete(bSuccess); };
             Downloader->BeginLoadingMode(LoadingModeCompleteCallback);
         }
