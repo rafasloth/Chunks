@@ -5,6 +5,8 @@
         "description": "This is a patch to make DLC_0/Materials/cubeDefault purple",
         "thumbnailUrl": "https://via.placeholder.com/300x300/f0c.png",
         "type": "patch",
+        "levelName": "",
+        "dlc_mount_point": "/Game/DLC_0",
         "version": "ver02"
     },
     {

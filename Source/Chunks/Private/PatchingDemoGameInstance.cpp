@@ -179,8 +179,28 @@ void UPatchingDemoGameInstance::ProcessDbResponse(const FString& ResponseContent
                     if (ChunkDownloadList.Contains(chunkId)) {
                         // TODO: Grab metadata for UI from the object
                         FString pakTitle;
-                        obj->TryGetStringField(TEXT("title"), pakTitle);
-                        UE_LOG(LogTemp, Display, TEXT("Title of the Pak: %s"), *pakTitle);
+                        result = obj->TryGetStringField(TEXT("title"), pakTitle);
+                        if (result == true) {
+                            UE_LOG(LogTemp, Display, TEXT("Title of the Pak: %s"), *pakTitle);
+                        }
+                        FString pakType;
+                        result = obj->TryGetStringField(TEXT("type"), pakType);
+                        if (result == true) {
+                            UE_LOG(LogTemp, Display, TEXT("Type of the Pak: %s"), *pakType);
+                            TempDlcType = pakType;
+                        }
+                        FString pakLevel;
+                        result = obj->TryGetStringField(TEXT("levelName"), pakLevel);
+                        if (result == true) {
+                            UE_LOG(LogTemp, Display, TEXT("Name of the Pak Level: %s"), *pakLevel);
+                            TempDlcLevelName = pakLevel;
+                        }
+                        FString pakMount;
+                        result = obj->TryGetStringField(TEXT("dlc_mount_point"), pakMount);
+                        if (result == true) {
+                            UE_LOG(LogTemp, Display, TEXT("Mount Point of the Pak: %s"), *pakMount);
+                            TempDlcMountPoint = pakMount;
+                        }
                     }
                 }
             }
