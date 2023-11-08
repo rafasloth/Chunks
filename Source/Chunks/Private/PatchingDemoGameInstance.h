@@ -43,6 +43,13 @@ public:
 
     void ProcessDbResponse(const FString& ResponseContent);
 
+    UPROPERTY(BlueprintReadOnly, Category = "Patching");
+    FString TempDlcType;
+    UPROPERTY(BlueprintReadOnly, Category = "Patching");
+    FString TempDlcLevelName;
+    UPROPERTY(BlueprintReadOnly, Category = "Patching");
+    FString TempDlcMountPoint;
+
 protected:
     //Tracks if our local manifest file is up to date with the one hosted on our website
     bool bIsDownloadManifestUpToDate;
