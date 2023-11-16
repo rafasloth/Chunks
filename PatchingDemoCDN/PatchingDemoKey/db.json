@@ -1,22 +1,12 @@
 [
     {
-        "id": 1001,
-        "title": "Green cubeDefault",
-        "description": "This is a patch to make DLC_0/Materials/cubeDefault green",
-        "thumbnailUrl": "https://via.placeholder.com/300x300/0f0.png",
-        "type": "patch",
-        "levelName": "",
-        "dlc_mount_point": "/Game/DLC_0",
-        "version": "ver01"
-    },
-    {
         "id": 1002,
         "title": "Init Level",
         "description": "This is a patch to load a level",
         "thumbnailUrl": "https://via.placeholder.com/300x300/f00.png",
         "type": "level",
         "levelName": "Init",
-        "dlc_mount_point": "/Game/DLC_1",
+        "dlc_mount_point": "/Game/DLC/DLC_1",
         "version": "ver01"
     }
 ]
