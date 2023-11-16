@@ -30,5 +30,17 @@ CdnBaseUrls="http://not_127_0_0_1/PatchingDemoCDN"
 
 ```
 
+## DLC Folder
+
+This prototype only looks at DLC that mounts inside a /Game/DLC subfolder e.g: /Game/DLC/DLC_1
+
 ## Tutorials
-[Part 1](https://youtu.be/Lb3QNm7b6nQ?si=QMZpKzRoBZeh7bL0)
+[Part 1](https://www.youtube.com/watch?v=Lb3QNm7b6nQ&list=PLlwqvWO3ju6OV5zY7IArOqbja56ghdkNS&index=1&pp=iAQB)
+[Part 2](https://www.youtube.com/watch?v=rjlCaVYkEf8&list=PLlwqvWO3ju6OV5zY7IArOqbja56ghdkNS&index=2&pp=iAQB)
+[Part 3](https://www.youtube.com/watch?v=zeosPs_vRFs&list=PLlwqvWO3ju6OV5zY7IArOqbja56ghdkNS&index=3&pp=iAQB)
+[Part 4](https://www.youtube.com/watch?v=h7UwQhyQ2xQ&list=PLlwqvWO3ju6OV5zY7IArOqbja56ghdkNS&index=4&pp=iAQB)
+[Part 5](https://www.youtube.com/watch?v=SDretDE6cvc&list=PLlwqvWO3ju6OV5zY7IArOqbja56ghdkNS&index=5&pp=iAQB)
+[Part 6](https://www.youtube.com/watch?v=57Tou4-BlaU&list=PLlwqvWO3ju6OV5zY7IArOqbja56ghdkNS&index=6&pp=iAQB)
+[Part 7](https://www.youtube.com/watch?v=zyT-GtomK2s&list=PLlwqvWO3ju6OV5zY7IArOqbja56ghdkNS&index=7&pp=iAQB)
+[Part 8](https://www.youtube.com/watch?v=cjxux8O9540&list=PLlwqvWO3ju6OV5zY7IArOqbja56ghdkNS&index=8&pp=iAQB)
+[Part 9](https://www.youtube.com/watch?v=uMEa2eNJlG8&list=PLlwqvWO3ju6OV5zY7IArOqbja56ghdkNS&index=9&pp=iAQB)
