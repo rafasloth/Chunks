@@ -16,7 +16,7 @@
         "thumbnailUrl": "https://via.placeholder.com/300x300/f00.png",
         "type": "level",
         "levelName": "Init",
-        "dlc_mount_point": "/Game/DLC_1",
+        "dlc_mount_point": "/Game/DLC/DLC_1",
         "version": "ver01"
     }
 ]
