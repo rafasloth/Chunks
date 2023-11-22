@@ -34,6 +34,10 @@ CdnBaseUrls="http://not_127_0_0_1/PatchingDemoCDN"
 
 This prototype only looks at DLC that mounts inside a /Game/DLC subfolder e.g: /Game/DLC/DLC_1
 
+## Common Plugin
+
+This base game uses the same common plugin available [here](https://github.com/rafasloth/ChunksCommon) also used by external projects that are meant to build DLC for this base game.
+
 ## Sample External Project
 
 [This](https://github.com/rafasloth/EntirelyNew) is a sample external project in which you can build DLCs to be used with this main project.
