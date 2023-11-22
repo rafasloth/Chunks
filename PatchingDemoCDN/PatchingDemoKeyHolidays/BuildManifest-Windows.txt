@@ -1,3 +1,3 @@
 $NUM_ENTRIES = 1
 $BUILD_ID = PatchingDemoKeyHolidays
-pakchunk1002-Windows.pak	329899	ver01	1002	/Windows/pakchunk1002-Windows.pak
+pakchunk1002-Windows.pak	329995	ver01	1002	/Windows/pakchunk1002-Windows.pak
