@@ -34,6 +34,14 @@ CdnBaseUrls="http://not_127_0_0_1/PatchingDemoCDN"
 
 This prototype only looks at DLC that mounts inside a /Game/DLC subfolder e.g: /Game/DLC/DLC_1
 
+## Common Plugin
+
+This base game uses the same common plugin available [here](https://github.com/rafasloth/ChunksCommon) also used by external projects that are meant to build DLC for this base game.
+
+## Sample External Project
+
+[This](https://github.com/rafasloth/EntirelyNew) is a sample external project in which you can build DLCs to be used with this main project.
+
 ## Tutorials
 - [Part 1](https://www.youtube.com/watch?v=Lb3QNm7b6nQ&list=PLlwqvWO3ju6OV5zY7IArOqbja56ghdkNS&index=1&pp=iAQB)
 - [Part 2](https://www.youtube.com/watch?v=rjlCaVYkEf8&list=PLlwqvWO3ju6OV5zY7IArOqbja56ghdkNS&index=2&pp=iAQB)
@@ -44,3 +52,4 @@ This prototype only looks at DLC that mounts inside a /Game/DLC subfolder e.g: /
 - [Part 7](https://www.youtube.com/watch?v=zyT-GtomK2s&list=PLlwqvWO3ju6OV5zY7IArOqbja56ghdkNS&index=7&pp=iAQB)
 - [Part 8](https://www.youtube.com/watch?v=cjxux8O9540&list=PLlwqvWO3ju6OV5zY7IArOqbja56ghdkNS&index=8&pp=iAQB)
 - [Part 9](https://www.youtube.com/watch?v=uMEa2eNJlG8&list=PLlwqvWO3ju6OV5zY7IArOqbja56ghdkNS&index=9&pp=iAQB)
+- [Part 10](https://www.youtube.com/watch?v=MXAJnUIFY9s&list=PLlwqvWO3ju6OV5zY7IArOqbja56ghdkNS&index=10&pp=gAQBiAQB)
