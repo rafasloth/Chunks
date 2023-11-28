@@ -8,5 +8,15 @@
         "levelName": "Init",
         "dlc_mount_point": "/Game/DLC/DLC_1",
         "version": "ver01"
+    },
+    {
+        "id": 9786,
+        "title": "CooldDLC - NewWorld",
+        "description": "Contains a new level from an external project",
+        "thumbnailUrl": "https://via.placeholder.com/300x300/f00.png",
+        "type": "level",
+        "levelName": "NewLevel",
+        "dlc_mount_point": "/Game/DLC/XYZ_CoolDLC",
+        "version": "ver01"
     }
 ]
