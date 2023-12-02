@@ -221,6 +221,8 @@ void UPatchingDemoGameInstance::ProcessDbResponse(const FString& ResponseContent
                     }
                 }
             }
+
+            OnTestDelegate.Broadcast();
         }
     }
 }

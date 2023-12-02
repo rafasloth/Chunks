@@ -9,6 +9,8 @@
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FPatchCompleteDelegate, bool, Succeeded);
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FTestDelegate);
+
 USTRUCT(BlueprintType)
 struct FJsonDlcInfo {
     GENERATED_BODY()
@@ -54,6 +56,8 @@ public:
     // Fired when the patching process succeeds or fails
     UPROPERTY(BlueprintAssignable, Category = "Patching");
     FPatchCompleteDelegate OnPatchComplete;
+    UPROPERTY(BlueprintAssignable, Category = "Patching")
+    FTestDelegate OnTestDelegate;
 
 public:
     // Starts the game patching process. Returns false if the patching manifest is not up to date. */
