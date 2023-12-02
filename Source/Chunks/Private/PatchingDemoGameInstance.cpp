@@ -121,6 +121,7 @@ bool UPatchingDemoGameInstance::PatchGame(int32 ChunkID)
         // get the chunk downloader
         TSharedRef<FChunkDownloader> Downloader = FChunkDownloader::GetChecked();
 
+        // This might not be necessary since QueryDB runs at begin play.
         Downloader->GetAllChunkIds(ChunksInManifestList);
         
         // report manifest file's chunk status
@@ -170,6 +171,10 @@ void UPatchingDemoGameInstance::ProcessDbResponse(const FString& ResponseContent
     TSharedRef<TJsonReader<TCHAR>> JsonReader = TJsonReaderFactory<TCHAR>::Create(ResponseContent);
     TArray<TSharedPtr<FJsonValue>> OutArray;
 
+    // get the chunk downloader
+    TSharedRef<FChunkDownloader> Downloader = FChunkDownloader::GetChecked();
+    Downloader->GetAllChunkIds(ChunksInManifestList);
+
     if (FJsonSerializer::Deserialize(JsonReader, OutArray)) {
         if (OutArray.Num() > 0) {
             UE_LOG(LogTemp, Display, TEXT("Found items in the DB"));
@@ -182,31 +187,37 @@ void UPatchingDemoGameInstance::ProcessDbResponse(const FString& ResponseContent
                     // if false return
                     if (result == false) { return; }
                     // check if chunk id in db.json exists in manifest file
-                    if (ChunkDownloadList.Contains(chunkId)) {
-                        // TODO: Grab metadata for UI from the object
+                    if (ChunksInManifestList.Contains(chunkId)) {
+                        FJsonDlcInfo dlc_item;
+                        dlc_item.ChunkId = chunkId;
+
                         FString pakTitle;
                         result = obj->TryGetStringField(TEXT("title"), pakTitle);
                         if (result == true) {
                             UE_LOG(LogTemp, Display, TEXT("Title of the Pak: %s"), *pakTitle);
+                            dlc_item.Title = pakTitle;
                         }
                         FString pakType;
                         result = obj->TryGetStringField(TEXT("type"), pakType);
                         if (result == true) {
                             UE_LOG(LogTemp, Display, TEXT("Type of the Pak: %s"), *pakType);
-                            TempDlcType = pakType;
+                            dlc_item.Type = pakType;
                         }
-                        FString pakLevel;
-                        result = obj->TryGetStringField(TEXT("levelName"), pakLevel);
+                        FString pakDescription;
+                        result = obj->TryGetStringField(TEXT("description"), pakDescription);
                         if (result == true) {
-                            UE_LOG(LogTemp, Display, TEXT("Name of the Pak Level: %s"), *pakLevel);
-                            TempDlcLevelName = pakLevel;
+                            UE_LOG(LogTemp, Display, TEXT("Description of the Pak: %s"), *pakDescription);
+                            dlc_item.Description = pakDescription;
                         }
-                        FString pakMount;
-                        result = obj->TryGetStringField(TEXT("dlc_mount_point"), pakMount);
+                        FString pakThumbnailUrl;
+                        result = obj->TryGetStringField(TEXT("thumbnailUrl"), pakThumbnailUrl);
                         if (result == true) {
-                            UE_LOG(LogTemp, Display, TEXT("Mount Point of the Pak: %s"), *pakMount);
-                            TempDlcMountPoint = pakMount;
+                            UE_LOG(LogTemp, Display, TEXT("Thumbnail URL of the Pak: %s"), *pakThumbnailUrl);
+                            dlc_item.ThumbnailUrl = pakThumbnailUrl;
                         }
+
+                        // TODO: Check for duplicates and update existing one instead.
+                        TempDlcList.Add(dlc_item);
                     }
                 }
             }
