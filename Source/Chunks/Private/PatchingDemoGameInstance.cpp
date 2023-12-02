@@ -90,6 +90,29 @@ void UPatchingDemoGameInstance::GetLoadingProgress(int32& BytesDownloaded, int32
     MountPercent = ((float)ChunksMounted / (float)TotalChunksToMount) * 100.0f;
 }
 
+void UPatchingDemoGameInstance::QueryDB() {
+    // get the chunk downloader
+    TSharedRef<FChunkDownloader> Downloader = FChunkDownloader::GetChecked();
+
+    FString dbUrl = BaseUrl + "/" + Downloader->GetContentBuildId() + "/db.json";
+
+    UE_LOG(LogTemp, Display, TEXT("DB URL is: %s"), *dbUrl);
+
+    // GETS a STRING from contents of db.json
+            // create a new Http request and bind the response callback
+    TSharedRef<IHttpRequest, ESPMode::ThreadSafe> Request = FHttpModule::Get().CreateRequest();
+    Request->OnProcessRequestComplete().BindUObject(this, &UPatchingDemoGameInstance::OnDbJsonResponse);
+
+    // configure and send the request
+    Request->SetURL(dbUrl);
+    Request->SetVerb("GET");
+    Request->SetHeader(TEXT("User-Agent"), "X-UnrealEngine-Agent");
+    Request->SetHeader("Content-Type", TEXT("application-json"));
+    Request->ProcessRequest();
+    // Serialize that string as JSON
+    // do stuff with the parsed JSON
+}
+
 bool UPatchingDemoGameInstance::PatchGame(int32 ChunkID)
 {
     // make sure the download manifest is up to date
@@ -98,10 +121,8 @@ bool UPatchingDemoGameInstance::PatchGame(int32 ChunkID)
         // get the chunk downloader
         TSharedRef<FChunkDownloader> Downloader = FChunkDownloader::GetChecked();
 
+        // This might not be necessary since QueryDB runs at begin play.
         Downloader->GetAllChunkIds(ChunksInManifestList);
-
-        FString dbUrl = BaseUrl + "/" + Downloader->GetContentBuildId() + "/db.json";
-        UE_LOG(LogTemp, Display, TEXT("DB URL is: %s"), *dbUrl);
         
         // report manifest file's chunk status
         for (int32 ChunkID : ChunksInManifestList)
@@ -110,20 +131,6 @@ bool UPatchingDemoGameInstance::PatchGame(int32 ChunkID)
             UE_LOG(LogTemp, Display, TEXT("Chunk %i status: %i"), ChunkID, ChunkStatus);
 
         }
-
-        // GETS a STRING from contents of db.json
-            // create a new Http request and bind the response callback
-        TSharedRef<IHttpRequest, ESPMode::ThreadSafe> Request = FHttpModule::Get().CreateRequest();
-        Request->OnProcessRequestComplete().BindUObject(this, &UPatchingDemoGameInstance::OnDbJsonResponse);
-
-        // configure and send the request
-        Request->SetURL(dbUrl);
-        Request->SetVerb("GET");
-        Request->SetHeader(TEXT("User-Agent"), "X-UnrealEngine-Agent");
-        Request->SetHeader("Content-Type", TEXT("application-json"));
-        Request->ProcessRequest();
-        // Serialize that string as JSON
-        // do stuff with the parsed JSON
 
         TFunction<void(bool bSuccess)> DownloadCompleteCallback = [&](bool bSuccess) {OnDownloadComplete(bSuccess); };
 
@@ -164,6 +171,10 @@ void UPatchingDemoGameInstance::ProcessDbResponse(const FString& ResponseContent
     TSharedRef<TJsonReader<TCHAR>> JsonReader = TJsonReaderFactory<TCHAR>::Create(ResponseContent);
     TArray<TSharedPtr<FJsonValue>> OutArray;
 
+    // get the chunk downloader
+    TSharedRef<FChunkDownloader> Downloader = FChunkDownloader::GetChecked();
+    Downloader->GetAllChunkIds(ChunksInManifestList);
+
     if (FJsonSerializer::Deserialize(JsonReader, OutArray)) {
         if (OutArray.Num() > 0) {
             UE_LOG(LogTemp, Display, TEXT("Found items in the DB"));
@@ -176,34 +187,42 @@ void UPatchingDemoGameInstance::ProcessDbResponse(const FString& ResponseContent
                     // if false return
                     if (result == false) { return; }
                     // check if chunk id in db.json exists in manifest file
-                    if (ChunkDownloadList.Contains(chunkId)) {
-                        // TODO: Grab metadata for UI from the object
+                    if (ChunksInManifestList.Contains(chunkId)) {
+                        FJsonDlcInfo dlc_item;
+                        dlc_item.ChunkId = chunkId;
+
                         FString pakTitle;
                         result = obj->TryGetStringField(TEXT("title"), pakTitle);
                         if (result == true) {
                             UE_LOG(LogTemp, Display, TEXT("Title of the Pak: %s"), *pakTitle);
+                            dlc_item.Title = pakTitle;
                         }
                         FString pakType;
                         result = obj->TryGetStringField(TEXT("type"), pakType);
                         if (result == true) {
                             UE_LOG(LogTemp, Display, TEXT("Type of the Pak: %s"), *pakType);
-                            TempDlcType = pakType;
+                            dlc_item.Type = pakType;
                         }
-                        FString pakLevel;
-                        result = obj->TryGetStringField(TEXT("levelName"), pakLevel);
+                        FString pakDescription;
+                        result = obj->TryGetStringField(TEXT("description"), pakDescription);
                         if (result == true) {
-                            UE_LOG(LogTemp, Display, TEXT("Name of the Pak Level: %s"), *pakLevel);
-                            TempDlcLevelName = pakLevel;
+                            UE_LOG(LogTemp, Display, TEXT("Description of the Pak: %s"), *pakDescription);
+                            dlc_item.Description = pakDescription;
                         }
-                        FString pakMount;
-                        result = obj->TryGetStringField(TEXT("dlc_mount_point"), pakMount);
+                        FString pakThumbnailUrl;
+                        result = obj->TryGetStringField(TEXT("thumbnailUrl"), pakThumbnailUrl);
                         if (result == true) {
-                            UE_LOG(LogTemp, Display, TEXT("Mount Point of the Pak: %s"), *pakMount);
-                            TempDlcMountPoint = pakMount;
+                            UE_LOG(LogTemp, Display, TEXT("Thumbnail URL of the Pak: %s"), *pakThumbnailUrl);
+                            dlc_item.ThumbnailUrl = pakThumbnailUrl;
                         }
+
+                        // TODO: Check for duplicates and update existing one instead.
+                        TempDlcList.Add(dlc_item);
                     }
                 }
             }
+
+            OnTestDelegate.Broadcast();
         }
     }
 }

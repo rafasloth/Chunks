@@ -9,6 +9,28 @@
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FPatchCompleteDelegate, bool, Succeeded);
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FTestDelegate);
+
+USTRUCT(BlueprintType)
+struct FJsonDlcInfo {
+    GENERATED_BODY()
+
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "DLC")
+    int32 ChunkId;
+    
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "DLC")
+    FString Title;
+
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "DLC")
+    FString Type = "Level";
+
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "DLC")
+    FString ThumbnailUrl;
+
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "DLC")
+    FString Description = "DLC Description goes here";
+};
+
 /**
  * 
  */
@@ -28,10 +50,14 @@ public:
     void GetLoadingProgress(int32& BytesDownloaded, int32& TotalBytesToDownload, float& DownloadPercent, int32& ChunksMounted, int32& TotalChunksToMount, float& MountPercent) const;
 
 public:
+    UFUNCTION(BlueprintCallable, Category = "Patching")
+    void QueryDB();
     // Delegates
     // Fired when the patching process succeeds or fails
     UPROPERTY(BlueprintAssignable, Category = "Patching");
     FPatchCompleteDelegate OnPatchComplete;
+    UPROPERTY(BlueprintAssignable, Category = "Patching")
+    FTestDelegate OnTestDelegate;
 
 public:
     // Starts the game patching process. Returns false if the patching manifest is not up to date. */
@@ -44,11 +70,7 @@ public:
     void ProcessDbResponse(const FString& ResponseContent);
 
     UPROPERTY(BlueprintReadOnly, Category = "Patching");
-    FString TempDlcType;
-    UPROPERTY(BlueprintReadOnly, Category = "Patching");
-    FString TempDlcLevelName;
-    UPROPERTY(BlueprintReadOnly, Category = "Patching");
-    FString TempDlcMountPoint;
+    TArray<FJsonDlcInfo> TempDlcList;
 
 protected:
     //Tracks if our local manifest file is up to date with the one hosted on our website
