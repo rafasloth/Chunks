@@ -28,6 +28,7 @@ public:
     void GetLoadingProgress(int32& BytesDownloaded, int32& TotalBytesToDownload, float& DownloadPercent, int32& ChunksMounted, int32& TotalChunksToMount, float& MountPercent) const;
 
 public:
+    void QueryDB();
     // Delegates
     // Fired when the patching process succeeds or fails
     UPROPERTY(BlueprintAssignable, Category = "Patching");
