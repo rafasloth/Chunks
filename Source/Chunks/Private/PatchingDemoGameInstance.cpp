@@ -216,8 +216,26 @@ void UPatchingDemoGameInstance::ProcessDbResponse(const FString& ResponseContent
                             dlc_item.ThumbnailUrl = pakThumbnailUrl;
                         }
 
-                        // TODO: Check for duplicates and update existing one instead.
-                        TempDlcList.Add(dlc_item);
+                        // Check for duplicates and update existing one instead.
+                        bool exists = false;
+                        int index = -1;
+
+                        for (int i = 0; i < TempDlcList.Num(); i++) {
+                            if (TempDlcList[i].ChunkId == dlc_item.ChunkId) {
+                                exists = true;
+                                index = i;
+                                break;
+                            }
+                        }
+                        
+                        if (!exists) {
+                            TempDlcList.Add(dlc_item);
+                        } else {
+                            TempDlcList[index].Description = dlc_item.Description;
+                            TempDlcList[index].ThumbnailUrl = dlc_item.ThumbnailUrl;
+                            TempDlcList[index].Title = dlc_item.Title;
+                            TempDlcList[index].Type = dlc_item.Type;
+                        }
                     }
                 }
             }
