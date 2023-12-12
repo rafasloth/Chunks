@@ -72,6 +72,10 @@ public:
     UPROPERTY(BlueprintReadOnly, Category = "Patching");
     TArray<FJsonDlcInfo> TempDlcList;
 
+    // Unmount all chunks and cancel any downloads in progress (preserving partial downloads). Call only once, don't reuse this object, make a new one.
+    /*UFUNCTION(BlueprintCallable, Category = "Patching")
+    void Finalize();*/
+
 protected:
     //Tracks if our local manifest file is up to date with the one hosted on our website
     bool bIsDownloadManifestUpToDate;
