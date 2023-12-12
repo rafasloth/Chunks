@@ -53,3 +53,7 @@ This base game uses the same common plugin available [here](https://github.com/r
 - [Part 8](https://www.youtube.com/watch?v=cjxux8O9540&list=PLlwqvWO3ju6OV5zY7IArOqbja56ghdkNS&index=8&pp=iAQB)
 - [Part 9](https://www.youtube.com/watch?v=uMEa2eNJlG8&list=PLlwqvWO3ju6OV5zY7IArOqbja56ghdkNS&index=9&pp=iAQB)
 - [Part 10](https://www.youtube.com/watch?v=MXAJnUIFY9s&list=PLlwqvWO3ju6OV5zY7IArOqbja56ghdkNS&index=10&pp=gAQBiAQB)
+- [Part 10](https://www.youtube.com/watch?v=MXAJnUIFY9s&list=PLlwqvWO3ju6OV5zY7IArOqbja56ghdkNS&index=10&pp=gAQBiAQB)
+- [Part 11](https://www.youtube.com/watch?v=ABEjybwr4M4)
+- [Part 12](https://www.youtube.com/watch?v=hEG8qJecLbM)
+- [Part 13](https://www.youtube.com/watch?v=GYT8uSaKuT8)

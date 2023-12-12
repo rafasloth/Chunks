@@ -284,3 +284,9 @@ void UPatchingDemoGameInstance::OnDownloadComplete(bool bSuccess)
         OnPatchComplete.Broadcast(false);
     }
 }
+
+void UPatchingDemoGameInstance::Finalize() {
+    // get the chunk downloader
+    TSharedRef<FChunkDownloader> Downloader = FChunkDownloader::GetChecked();
+    Downloader->Finalize();
+}
