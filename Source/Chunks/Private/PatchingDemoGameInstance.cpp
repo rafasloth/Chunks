@@ -285,9 +285,8 @@ void UPatchingDemoGameInstance::OnDownloadComplete(bool bSuccess)
     }
 }
 
-/*void UPatchingDemoGameInstance::Finalize() {
+void UPatchingDemoGameInstance::Finalize() {
     // get the chunk downloader
     TSharedRef<FChunkDownloader> Downloader = FChunkDownloader::GetChecked();
     Downloader->Finalize();
 }
-*/
