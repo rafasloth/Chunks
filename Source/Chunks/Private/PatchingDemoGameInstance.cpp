@@ -58,7 +58,10 @@ void UPatchingDemoGameInstance::OnPatchVersionResponse(FHttpRequestPtr Request, 
             Downloader->LoadCachedBuild(DeploymentName);
 
             // update the build manifest file
-            TFunction<void(bool bSuccess)> UpdateCompleteCallback = [&](bool bSuccess) {bIsDownloadManifestUpToDate = bSuccess; };
+            TFunction<void(bool bSuccess)> UpdateCompleteCallback = [&](bool bSuccess) {
+                bIsDownloadManifestUpToDate = bSuccess;
+                QueryDB();
+            };
             Downloader->UpdateBuild(DeploymentName, ContentBuildId, UpdateCompleteCallback);
         }
         else {
