@@ -78,6 +78,7 @@ public:
 
 protected:
     //Tracks if our local manifest file is up to date with the one hosted on our website
+    UPROPERTY(BlueprintReadOnly, Category = "Patching");
     bool bIsDownloadManifestUpToDate;
 
 protected:
