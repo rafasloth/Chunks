@@ -32,28 +32,39 @@ void UPatchingDemoGameInstance::Init()
     Request->SetVerb("GET");
     Request->SetHeader(TEXT("User-Agent"), "X-UnrealEngine-Agent");
     Request->SetHeader("Content-Type", TEXT("application-json"));
-    Request->ProcessRequest();
-
+    if (!Request->ProcessRequest()) {
+        UE_LOG(LogTemp, Display, TEXT("Failed HTTP request to ContentBuildId.txt. File Unreachable."));
+    }
     
 }
 
-void UPatchingDemoGameInstance::OnPatchVersionResponse(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSucessful) {
-    if (bWasSucessful) { // Pretty important to fix "Assertion failed: IsValid()" when CDN is down!!!
+void UPatchingDemoGameInstance::OnPatchVersionResponse(FHttpRequestPtr Request, FHttpResponsePtr response, bool bWasSucessful) {
 
-        // content build ID. Our Http response will provide this info from txt file. From Blueprint editable variable.
-        FString ContentBuildId = Response->GetContentAsString(); // Throws assertion error popup if the CDN is down, because there wasn't a reponse!!!
-        UE_LOG(LogTemp, Display, TEXT("Patch Content ID Response: %s"), *ContentBuildId);
-        // initialize the chunk downloader with chosen platform
-        TSharedRef<FChunkDownloader> Downloader = FChunkDownloader::GetOrCreate();
-        Downloader->Initialize(
-            UGameplayStatics::GetPlatformName(), 8);
+    if (bWasSucessful) {
+        if (!response.IsValid()) { // Pretty important to fix "Assertion failed: IsValid()" when Web Server is down!!!
+            // HTTP request failed
+            UE_LOG(LogTemp, Display, TEXT("Failed HTTP request response from ContentBuildId.txt file. File Unreachable."));
+        }
+        else if (EHttpResponseCodes::IsOk(response->GetResponseCode())) {
+            // content build ID. Our Http response will provide this info from txt file. From Blueprint editable variable.
+            FString ContentBuildId = response->GetContentAsString(); // Throws assertion error popup if the CDN is down, because there wasn't a reponse!!!
+            UE_LOG(LogTemp, Display, TEXT("Patch Content ID Response: %s"), *ContentBuildId);
+            // initialize the chunk downloader with chosen platform
+            TSharedRef<FChunkDownloader> Downloader = FChunkDownloader::GetOrCreate();
+            Downloader->Initialize(
+                UGameplayStatics::GetPlatformName(), 8);
 
-        // load the cached build ID
-        Downloader->LoadCachedBuild(DeploymentName);
+            // load the cached build ID
+            Downloader->LoadCachedBuild(DeploymentName);
 
-        // update the build manifest file
-        TFunction<void(bool bSuccess)> UpdateCompleteCallback = [&](bool bSuccess) {bIsDownloadManifestUpToDate = bSuccess; };
-        Downloader->UpdateBuild(DeploymentName, ContentBuildId, UpdateCompleteCallback);
+            // update the build manifest file
+            TFunction<void(bool bSuccess)> UpdateCompleteCallback = [&](bool bSuccess) {bIsDownloadManifestUpToDate = bSuccess; };
+            Downloader->UpdateBuild(DeploymentName, ContentBuildId, UpdateCompleteCallback);
+        }
+        else {
+            // HTTP request error
+            UE_LOG(LogTemp, Display, TEXT("Failed HTTP request for ContentBuildId.txt."));
+        }
     }
 }
 
@@ -98,8 +109,7 @@ void UPatchingDemoGameInstance::QueryDB() {
 
     UE_LOG(LogTemp, Display, TEXT("DB URL is: %s"), *dbUrl);
 
-    // GETS a STRING from contents of db.json
-            // create a new Http request and bind the response callback
+    // create a new Http request and bind the response callback
     TSharedRef<IHttpRequest, ESPMode::ThreadSafe> Request = FHttpModule::Get().CreateRequest();
     Request->OnProcessRequestComplete().BindUObject(this, &UPatchingDemoGameInstance::OnDbJsonResponse);
 
@@ -108,9 +118,12 @@ void UPatchingDemoGameInstance::QueryDB() {
     Request->SetVerb("GET");
     Request->SetHeader(TEXT("User-Agent"), "X-UnrealEngine-Agent");
     Request->SetHeader("Content-Type", TEXT("application-json"));
-    Request->ProcessRequest();
-    // Serialize that string as JSON
-    // do stuff with the parsed JSON
+    
+    if (!Request->ProcessRequest())
+    {
+        // HTTP request failed
+        UE_LOG(LogTemp, Display, TEXT("Failed HTTP request to db.json file. File Unreachable."));
+    }
 }
 
 bool UPatchingDemoGameInstance::PatchGame(int32 ChunkID)
@@ -154,12 +167,20 @@ bool UPatchingDemoGameInstance::PatchGame(int32 ChunkID)
     return false;
 }
 
-void UPatchingDemoGameInstance::OnDbJsonResponse(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSucessful) {
-    if (bWasSucessful) { // Pretty important to fix "Assertion failed: IsValid()" when Web Server is down!!!
-        // content build ID. Our Http response will provide this info from txt file. From Blueprint editable variable.
-        FString Db = Response->GetContentAsString(); // Throws assertion error popup if the Web Server is down, because there wasn't a reponse!!!
+void UPatchingDemoGameInstance::OnDbJsonResponse(FHttpRequestPtr Request, FHttpResponsePtr response, bool bWasSucessful) {
+    if (bWasSucessful) {
+        if (!response.IsValid()) { // Pretty important to fix "Assertion failed: IsValid()" when Web Server is down!!!
+            // HTTP request failed
+            UE_LOG(LogTemp, Display, TEXT("Failed HTTP request response from db.json file. File Unreachable."));
+        } else if (EHttpResponseCodes::IsOk(response->GetResponseCode())) {
+            // content build ID. Our Http response will provide this info from txt file. From Blueprint editable variable.
+            FString Db = response->GetContentAsString(); // Throws assertion error popup if the Web Server is down, because there wasn't a reponse!!!
 
-        ProcessDbResponse(Db);
+            ProcessDbResponse(Db);
+        } else {
+            // HTTP request error
+            UE_LOG(LogTemp, Display, TEXT("Failed HTTP request for db.json."));
+        }
     }
 }
 

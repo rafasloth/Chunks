@@ -64,8 +64,8 @@ public:
     UFUNCTION(BlueprintCallable, Category = "Patching")
     bool PatchGame(int32 ChunkID);
 
-    void OnPatchVersionResponse(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSucessful);
-    void OnDbJsonResponse(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSucessful);
+    void OnPatchVersionResponse(FHttpRequestPtr Request, FHttpResponsePtr response, bool bWasSucessful);
+    void OnDbJsonResponse(FHttpRequestPtr Request, FHttpResponsePtr response, bool bWasSucessful);
 
     void ProcessDbResponse(const FString& ResponseContent);
 
